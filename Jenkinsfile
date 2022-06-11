@@ -1,6 +1,6 @@
 podTemplate(
     label: 'slave', 
-    cloud: 'kubernetes',
+    //cloud: 'kubernetes',
     serviceAccount: 'jenkins',
     containers: [
         containerTemplate(
