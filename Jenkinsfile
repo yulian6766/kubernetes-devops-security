@@ -45,9 +45,9 @@ podTemplate(
                 try {
                     sh 'mvn test'
                 } 
-                //finally {
+                finally {
                 //    junit '**/target/surefire-reports/TEST-*.xml'
-                //}
+                }
             }
 		
 	    stage('Archive artifact') {
