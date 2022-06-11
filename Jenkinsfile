@@ -14,7 +14,7 @@ pipeline {
         '''
     }
   }
-  stages {
+  
     container('maven'){
       stage('Build Artifact - Maven') {
         steps {
@@ -32,5 +32,5 @@ pipeline {
         }
       }
     }
-  }
+  
 }
