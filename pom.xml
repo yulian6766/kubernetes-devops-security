@@ -46,7 +46,6 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 			
-			#### Jacoco Plugin in pom.xml
 <!--                   Jacoco Plugin                   -->
 			<plugin>
    				<groupId>org.jacoco</groupId>
