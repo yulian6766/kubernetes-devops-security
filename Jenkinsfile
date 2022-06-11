@@ -37,9 +37,9 @@ podTemplate(
 ) {
     node('slave') {
 
-        //stage('Checkout code') {
-        //    checkout scm
-        //}
+        stage('Checkout code') {
+            checkout scm
+        }
         
         container('maven') {
             stage('Build Artifact - Maven') {
