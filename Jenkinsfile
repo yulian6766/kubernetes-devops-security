@@ -25,7 +25,8 @@ pipeline {
         steps {
           sh 'mvn test'  
         }
-       stage('Archive Artifact') {
+	  }
+      stage('Archive Artifact') {
         steps {
           archive 'target/*.jar' //so that they can be downloaded later
         }
