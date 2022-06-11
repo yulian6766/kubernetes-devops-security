@@ -3,6 +3,7 @@ podTemplate(
     //cloud: 'kubernetes',
     //serviceAccount: 'jenkins',
     containers: [
+	    /*
         containerTemplate(
             name: 'docker', 
             image: 'docker:dind', 
@@ -11,18 +12,21 @@ podTemplate(
             privileged: true,
             command: 'dockerd --host=unix:///var/run/docker.sock --host=tcp://0.0.0.0:2375 --storage-driver=overlay'
         ),
+	*/
         containerTemplate(
             name: 'maven',
             image: 'maven:alpine',
             ttyEnabled: true,
             command: 'cat'
         ),
+	    /*
         containerTemplate(
             name: 'kubectl', 
             image: 'lachlanevenson/k8s-kubectl:latest', 
             command: 'cat', 
             ttyEnabled: true
         )
+	*/
     ],
    volumes: [
        emptyDirVolume(
