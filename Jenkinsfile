@@ -50,7 +50,7 @@ podTemplate(
                     sh 'mvn test'
                 } 
                 finally {
-                    junit '**/target/surefire-reports/TEST-*.xml'
+                    junit '**/target/surefire-reports/*.xml'
 		    jacoco execPattern: 'target/jacoco.exec'
                 }
             }
