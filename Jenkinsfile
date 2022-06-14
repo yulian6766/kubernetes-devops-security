@@ -37,7 +37,7 @@ podTemplate(
 ) {
     node('slave') {
 	
-	def REGISTRY_URL = "https://registry.hub.docker.com/v2/"
+	def REGISTRY_URL = "https://index.docker.io/v1/"
 	def IMAGETAG     = "yulian6766/numeric-app"
 	    
         stage('Checkout code') {
