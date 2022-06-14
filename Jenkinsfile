@@ -68,14 +68,16 @@ podTemplate(
         }//maven
 
         container('docker') {
-            stage('Create image') {
-                docker.withRegistry("$REGISTRY_URL") {
-                    image = docker.build("$IMAGETAG")
-                    image.inside {
-                        sh 'ls -alh'
-                    }
-                    image.push()
-                }
+            stage('Build And Push Image') {
+                
+                	docker.withRegistry("$REGISTRY_URL", 'docker') {
+                    		image = docker.build("$IMAGETAG")
+                    		image.inside {
+                        		sh 'ls -alh'
+                   		}
+                   	image.push()
+			}
+                
             }
         }//docker
 	
