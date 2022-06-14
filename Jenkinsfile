@@ -3,7 +3,7 @@ podTemplate(
     //cloud: 'kubernetes',
     //serviceAccount: 'jenkins',
     containers: [
-	    /*
+	    
         containerTemplate(
             name: 'docker', 
             image: 'docker:dind', 
@@ -12,7 +12,7 @@ podTemplate(
             privileged: true,
             command: 'dockerd --host=unix:///var/run/docker.sock --host=tcp://0.0.0.0:2375 --storage-driver=overlay'
         ),
-	*/
+	
         containerTemplate(
             name: 'maven',
             image: 'maven:alpine',
@@ -36,7 +36,10 @@ podTemplate(
     ]
 ) {
     node('slave') {
-
+	
+	def REGISTRY_URL = "https://registry.hub.docker.com/v2/"
+	def IMAGETAG     = "yulian6766/numeric-app"
+	    
         stage('Checkout code') {
             checkout scm
         }
@@ -64,9 +67,9 @@ podTemplate(
           
         }//maven
 
-        /*container('docker') {
+        container('docker') {
             stage('Create image') {
-                docker.withRegistry("$REGISTRY_URL", "ecr:us-east-2:aws") {
+                docker.withRegistry("$REGISTRY_URL") {
                     image = docker.build("$IMAGETAG")
                     image.inside {
                         sh 'ls -alh'
@@ -75,7 +78,8 @@ podTemplate(
                 }
             }
         }//docker
-
+	
+	/*
         container('kubectl') {
             stage('Deploy image') {
                 sh "kubectl get ns $NAMESPACE || kubectl create ns $NAMESPACE"
