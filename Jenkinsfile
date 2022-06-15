@@ -90,8 +90,10 @@ podTemplate(
             stage('Kubernetes - Prepare namespace') {
                 sh "kubectl get ns $NAMESPACE || kubectl create ns $NAMESPACE"
                 sh "kubectl get pods --namespace $NAMESPACE"
-		sh "kubectl -n $NAMESPACE create deploy node-app --image siddharth67/node-service:v1"
-		sh "kubectl -n $NAMESPACE expose deploy node-app --name node-service --port 5000"
+		catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+			sh "kubectl -n $NAMESPACE create deploy node-app --image siddharth67/node-service:v1"
+			sh "kubectl -n $NAMESPACE expose deploy node-app --name node-service --port 5000"
+		}
 		sh "sed -i.bak 's#replace#$IMAGETAG#g' k8s_deployment_service.yaml"
 	    }
             stage('Kubernetes Deployment') {
