@@ -95,7 +95,7 @@ podTemplate(
 		sh "sed -i.bak 's#replace#$IMAGETAG#g' k8s_deployment_service.yaml"
 	    }
             stage('Kubernetes Deployment') {
-		sh "kubectl apply -f k8s_deployment_service.yaml"
+		sh "kubectl -n $NAMESPACE apply -f k8s_deployment_service.yaml"
             }
         }
 
