@@ -1,6 +1,6 @@
 podTemplate(
     label: 'slave', 
-    //cloud: 'kubernetes',
+    cloud: 'kubernetes-cloud',
     //serviceAccount: 'jenkins',
     containers: [
 	    
@@ -19,14 +19,14 @@ podTemplate(
             ttyEnabled: true,
             command: 'cat'
         ),
-	    /*
+	    
         containerTemplate(
             name: 'kubectl', 
             image: 'lachlanevenson/k8s-kubectl:latest', 
             command: 'cat', 
             ttyEnabled: true
         )
-	*/
+	
     ],
    volumes: [
        emptyDirVolume(
@@ -37,8 +37,12 @@ podTemplate(
 ) {
     node('slave') {
 	
+	def PROJECT      = 'yulian6766'
+	def SERVICENAME  = 'numeric-app'
 	def REGISTRY_URL = "https://index.docker.io/v1/"
-	def IMAGETAG     = "yulian6766/numeric-app"
+	def IMAGEVERSION = "beta"
+	def IMAGETAG     = "$PROJECT/$SERVICENAME:$IMAGEVERSION${env.BUILD_NUMBER}"
+	def NAMESPACE    = 'dev'
 	    
         stage('Checkout code') {
             checkout scm
@@ -81,19 +85,19 @@ podTemplate(
             }
         }//docker
 	
-	/*
+	
         container('kubectl') {
-            stage('Deploy image') {
+            stage('Kubernetes - Prepare namespace') {
                 sh "kubectl get ns $NAMESPACE || kubectl create ns $NAMESPACE"
                 sh "kubectl get pods --namespace $NAMESPACE"
-                sh "sed -i.bak 's#$PROJECT/$SERVICENAME:$IMAGEVERSION#$IMAGETAG#' ./k8s/dev/*.yaml"
-                sh "kubectl --namespace=$NAMESPACE delete configmap $SERVICENAME-configmap"
-                sh "kubectl --namespace=$NAMESPACE apply -f k8s/dev/configmap.yaml"
-                sh "kubectl --namespace=$NAMESPACE apply -f k8s/dev/deployment.yaml"
-                sh "kubectl --namespace=$NAMESPACE apply -f k8s/dev/service.yaml"
-                sh "echo http://`kubectl --namespace=$NAMESPACE get service/$SERVICENAME --output=json jsonpath='{.status.loadBalancer.ingress[0].ip}'` > $SERVICENAME"
+		sh "kubectl -n $NAMESPACE create deploy node-app --image siddharth67/node-service:v1"
+		sh "kubectl -n $NAMESPACE expose deploy node-app --name node-service --port 5000"
+		sh "sed -i.bak 's#replace#$IMAGETAG#g' k8s_deployment_service.yaml"
+	    }
+            stage('Kubernetes Deployment') {
+		sh "kubectl apply -f k8s_deployment_service.yaml"
             }
-        }*/
+        }
 
     }//node
 }//podTemplate
