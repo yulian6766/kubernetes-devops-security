@@ -67,8 +67,8 @@ podTemplate(
       		try {
 			
             		sh "mvn org.pitest:pitest-maven:mutationCoverage"
-			}
-          	}
+		}
+          	
           	finally {        		
           		pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml' 
       	        }
