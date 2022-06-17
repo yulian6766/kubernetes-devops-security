@@ -71,17 +71,15 @@ podTemplate(
           		pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml' 
       	        }
 	    }
-	   	
-		
-	    stage('Archive artifact') {
-		archive 'target/*.jar' //so that they can be downloaded later
-	    }
             
-		
 	    stage('SonarQube - SAST') {
                 sh "mvn sonar:sonar -Dsonar.host.url=http://192.168.99.30:9000 -DskipTests=true -Dsonar.projectKey=$SERVICENAME -Dsonar.projectName=$SERVICENAME -Dsonar.login=$SONARKEY"
             }
           
+	    stage('Archive artifact') {
+		archive 'target/*.jar' //so that they can be downloaded later
+	    }
+		
         }//maven
 
         container('docker') {
