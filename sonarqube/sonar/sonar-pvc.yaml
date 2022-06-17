@@ -4,6 +4,7 @@ metadata:
   name: sonar-pvc
   namespace: sonar
 spec:
+  storageClassName: manual
   accessModes:
     - ReadWriteOnce
   resources:
