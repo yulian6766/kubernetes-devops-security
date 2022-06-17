@@ -43,7 +43,6 @@ podTemplate(
 	def IMAGEVERSION = "beta"
 	def IMAGETAG     = "$PROJECT/$SERVICENAME:$IMAGEVERSION${env.BUILD_NUMBER}"
 	def NAMESPACE    = 'dev'
-	def SONARKEY	 = '5603433b4e22ce78ef3d5ce3f3924a1ad9494243'
 	    
         stage('Checkout code') {
             checkout scm
@@ -76,7 +75,7 @@ podTemplate(
             
 	    stage('SonarQube - SAST') {
 		    withSonarQubeEnv('SonarQube') {
-                	sh "mvn sonar:sonar -Dsonar.host.url=http://192.168.99.30:9000 -DskipTests=true -Dsonar.projectKey=$SERVICENAME -Dsonar.projectName=$SERVICENAME -Dsonar.login=$SONARKEY"
+                	sh "mvn sonar:sonar -Dsonar.host.url=http://192.168.99.30:9000 -DskipTests=true -Dsonar.projectKey=$SERVICENAME -Dsonar.projectName=$SERVICENAME"
 		    }
 	        timeout(time: 2, unit: 'MINUTES') {
           		script {
