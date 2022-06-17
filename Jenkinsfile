@@ -75,9 +75,11 @@ podTemplate(
 	    stage('Archive artifact') {
 		archive 'target/*.jar' //so that they can be downloaded later
 	    }
-            //stage('Scann Code') {
-            //    sh "mvn sonar:sonar -Dsonar.host.url=http://sonarqube-sonarqube:9000 -DskipTests=true -Dsonar.projectKey=$SERVICENAME -Dsonar.projectName=$SERVICENAME"
-            //}
+            
+		
+	    stage('SonarQube - SAST') {
+                sh "mvn sonar:sonar -Dsonar.host.url=http://192.168.99.30:9000 -DskipTests=true -Dsonar.projectKey=$SERVICENAME -Dsonar.projectName=$SERVICENAME"
+            }
           
         }//maven
 
