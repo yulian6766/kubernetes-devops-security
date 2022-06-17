@@ -65,7 +65,9 @@ podTemplate(
  	    
 	    stage('Mutation Tests - PIT') {
       		try {
+			
             		sh "mvn org.pitest:pitest-maven:mutationCoverage"
+			}
           	}
           	finally {        		
           		pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml' 
@@ -73,7 +75,14 @@ podTemplate(
 	    }
             
 	    stage('SonarQube - SAST') {
-                sh "mvn sonar:sonar -Dsonar.host.url=http://192.168.99.30:9000 -DskipTests=true -Dsonar.projectKey=$SERVICENAME -Dsonar.projectName=$SERVICENAME -Dsonar.login=$SONARKEY"
+		    withSonarQubeEnv('SonarQube') {
+                	sh "mvn sonar:sonar -Dsonar.host.url=http://192.168.99.30:9000 -DskipTests=true -Dsonar.projectKey=$SERVICENAME -Dsonar.projectName=$SERVICENAME -Dsonar.login=$SONARKEY"
+		    }
+	            timeout(time: 2, unit: 'MINUTES') {
+          		script {
+            			waitForQualityGate abortPipeline: true
+          		}
+        	   }
             }
           
 	    stage('Archive artifact') {
