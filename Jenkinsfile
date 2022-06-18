@@ -53,24 +53,24 @@ podTemplate(
                 sh 'mvn clean package -DskipTests=true'
             }
             stage('Test Artifact - Maven JaCoCo') {
-                try {
+                //try {
                     sh 'mvn test'
-                } 
-                finally {
-                    junit '**/target/surefire-reports/*.xml'
-		    jacoco execPattern: 'target/jacoco.exec'
-                }
+                //} 
+                //finally {
+                //    junit '**/target/surefire-reports/*.xml'
+		        //    jacoco execPattern: 'target/jacoco.exec'
+                //}
             }
  	    
 	        stage('Mutation Tests - PIT') {
-      		    try {
+      		    //try {
 			
             		sh "mvn org.pitest:pitest-maven:mutationCoverage"
-		        }
+		        //}
           	
-          	    finally {        		
-          		    pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml' 
-      	        }
+          	    //finally {        		
+          		//    pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml' 
+      	        //}
 	        }
             
 	        stage('SonarQube - SAST') {
@@ -89,12 +89,12 @@ podTemplate(
 	        }
 
             stage('Vulnerability Scan - Dependency Check ') {
-                try {
+                //try {
                     sh "mvn dependency-check:check"
-                }
-                finally {
-                    dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
-                }
+                //}
+                //finally {
+                //    dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
+                //}
             }
 
         }//maven
@@ -130,6 +130,23 @@ podTemplate(
             stage('Kubernetes Deployment') {
 		        sh "kubectl -n $NAMESPACE apply -f k8s_deployment_service.yaml"
             }
+        }//kubectl
+
+        post {
+            always {
+                junit 'target/surefire-reports/*.xml'
+                jacoco execPattern: 'target/jacoco.exec'
+                pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml'
+                dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
+            }
+
+            // success {
+
+            // }
+
+            // failure {
+
+            // }
         }
 
     }//node
