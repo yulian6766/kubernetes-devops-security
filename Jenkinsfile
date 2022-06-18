@@ -62,44 +62,56 @@ podTemplate(
                 }
             }
  	    
-	    stage('Mutation Tests - PIT') {
-      		try {
+	        stage('Mutation Tests - PIT') {
+      		    try {
 			
             		sh "mvn org.pitest:pitest-maven:mutationCoverage"
-		    }
+		        }
           	
-          	finally {        		
-          		pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml' 
-      	    }
-	    }
+          	    finally {        		
+          		    pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml' 
+      	        }
+	        }
             
-	    stage('SonarQube - SAST') {
-		    withSonarQubeEnv('SonarQube') {
+	        stage('SonarQube - SAST') {
+		        withSonarQubeEnv('SonarQube') {
                 	sh "mvn sonar:sonar -Dsonar.host.url=http://192.168.99.30:9000 -DskipTests=true -Dsonar.projectKey=$SERVICENAME -Dsonar.projectName=$SERVICENAME"
-		    }
-	        timeout(time: 2, unit: 'MINUTES') {
-          		script {
+		        }
+	            timeout(time: 2, unit: 'MINUTES') {
+          		    script {
             			waitForQualityGate abortPipeline: true
-          		}
-        	}
-        }
+          		    }
+        	    }
+            }
           
-	    stage('Archive artifact') {
-		    archive 'target/*.jar' //so that they can be downloaded later
-	    }
-		
+	        stage('Archive artifact') {
+		        archive 'target/*.jar' //so that they can be downloaded later
+	        }
+
+            stage('Vulnerability Scan - Dependency Check ') {
+                try {
+                    sh "mvn dependency-check:check"
+                }
+                finally {
+                    dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
+                }
+            }
+
         }//maven
+
+            
+    
 
         container('docker') {
             stage('Build And Push Image') {
                 
-                	docker.withRegistry("$REGISTRY_URL", 'docker') {
-                    		image = docker.build("$IMAGETAG")
-                    		image.inside {
-                        		sh 'ls -alh'
-                   		}
-                   	image.push()
-			}
+                docker.withRegistry("$REGISTRY_URL", 'docker') {
+                    image = docker.build("$IMAGETAG")
+                    image.inside {
+                    	sh 'ls -alh'
+                	}
+                image.push()
+			    }
                 
             }
         }//docker
@@ -109,14 +121,14 @@ podTemplate(
             stage('Kubernetes - Prepare namespace') {
                 sh "kubectl get ns $NAMESPACE || kubectl create ns $NAMESPACE"
                 sh "kubectl get pods --namespace $NAMESPACE"
-		catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-			sh "kubectl -n $NAMESPACE create deploy node-app --image siddharth67/node-service:v1"
-			sh "kubectl -n $NAMESPACE expose deploy node-app --name node-service --port 5000"
-		}
-		sh "sed -i.bak 's#replace#$IMAGETAG#g' k8s_deployment_service.yaml"
-	    }
+		        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+			        sh "kubectl -n $NAMESPACE create deploy node-app --image siddharth67/node-service:v1"
+			        sh "kubectl -n $NAMESPACE expose deploy node-app --name node-service --port 5000"
+		        }
+		        sh "sed -i.bak 's#replace#$IMAGETAG#g' k8s_deployment_service.yaml"
+	        }
             stage('Kubernetes Deployment') {
-		sh "kubectl -n $NAMESPACE apply -f k8s_deployment_service.yaml"
+		        sh "kubectl -n $NAMESPACE apply -f k8s_deployment_service.yaml"
             }
         }
 
