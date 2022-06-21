@@ -29,7 +29,7 @@ podTemplate(
 
         containerTemplate(
             name: 'trivy',
-            image: 'aquasec/trivy:0.29.0',
+            image: 'aquasec/trivy:latest',
             command: 'cat', 
             ttyEnabled: true,
             args: 'infinity'
