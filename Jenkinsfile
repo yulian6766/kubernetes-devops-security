@@ -125,7 +125,8 @@ podTemplate(
 
         container('trivy') {   
             stage('Image Scan - Trivy ') {
-                sh "trivy image -f json -o results.json $IMAGETAG"
+                //sh "trivy image -f json -o results.json $IMAGETAG"
+                sh "trivy image -f json -o results.json $IMAGETAG --severity CRITICAL --exit-code 1"
                 recordIssues(tools: [trivy(pattern: 'results.json')])
             }
         }//Trivy
