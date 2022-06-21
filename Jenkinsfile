@@ -30,7 +30,8 @@ podTemplate(
         containerTemplate {
             name 'trivy'
             image 'aquasec/trivy:0.29.0'
-            command 'sleep'
+            command: 'cat', 
+            ttyEnabled: true
             args 'infinity'
         }
 	
