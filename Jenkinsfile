@@ -25,7 +25,14 @@ podTemplate(
             image: 'lachlanevenson/k8s-kubectl:latest', 
             command: 'cat', 
             ttyEnabled: true
-        )
+        ),
+
+        containerTemplate {
+            name 'trivy'
+            image 'aquasec/trivy:0.29.0'
+            command 'sleep'
+            args 'infinity'
+        }
 	
     ],
    volumes: [
@@ -53,24 +60,24 @@ podTemplate(
                 sh 'mvn clean package -DskipTests=true'
             }
             stage('Test Artifact - Maven JaCoCo') {
-                //try {
+                try {
                     sh 'mvn test'
-                //} 
-                //finally {
-                //    junit '**/target/surefire-reports/*.xml'
-		        //    jacoco execPattern: 'target/jacoco.exec'
-                //}
+                } 
+                finally {
+                    junit '**/target/surefire-reports/*.xml'
+		            jacoco execPattern: 'target/jacoco.exec'
+                }
             }
  	    
 	        stage('Mutation Tests - PIT') {
-      		    //try {
+      		    try {
 			
             		sh "mvn org.pitest:pitest-maven:mutationCoverage"
-		        //}
+		        }
           	
-          	    //finally {        		
-          		//    pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml' 
-      	        //}
+          	    finally {        		
+          		    pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml' 
+      	        }
 	        }
             
 	        stage('SonarQube - SAST') {
@@ -89,17 +96,15 @@ podTemplate(
 	        }
 
             stage('Vulnerability Scan - Dependency Check ') {
-                //try {
+                try {
                     sh "mvn dependency-check:check"
-                //}
-                //finally {
-                //    dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
-                //}
+                }
+                finally {
+                    dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
+                }
             }
 
         }//maven
-
-            
     
 
         container('docker') {
@@ -116,7 +121,14 @@ podTemplate(
             }
         }//docker
 	
-	
+
+        container('trivy') {   
+            stage('Image Scan - Trivy ') {
+                sh "trivy image -f json -o results.json $IMAGETAG"
+                recordIssues(tools: [trivy(pattern: 'results.json')])
+            }
+        }//Trivy
+
         container('kubectl') {
             stage('Kubernetes - Prepare namespace') {
                 sh "kubectl get ns $NAMESPACE || kubectl create ns $NAMESPACE"
@@ -132,13 +144,13 @@ podTemplate(
             }
         }//kubectl
 
-        post {
-            always {
-                junit 'target/surefire-reports/*.xml'
-                jacoco execPattern: 'target/jacoco.exec'
-                pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml'
-                dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
-            }
+        //post {
+        //    always {
+        //       junit 'target/surefire-reports/*.xml'
+        //        jacoco execPattern: 'target/jacoco.exec'
+        //        pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml'
+        //        dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
+        //    }
 
             // success {
 
@@ -147,7 +159,7 @@ podTemplate(
             // failure {
 
             // }
-        }
+        //}//post
 
     }//node
 }//podTemplate
