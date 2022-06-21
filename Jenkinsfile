@@ -32,7 +32,7 @@ podTemplate(
             image: 'aquasec/trivy:latest',
             command: 'cat', 
             ttyEnabled: true,
-            args: 'infinity'
+            //args: 'infinity'
         ),
 	
     ],
