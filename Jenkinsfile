@@ -34,6 +34,13 @@ podTemplate(
             ttyEnabled: true,
             //args: 'infinity'
         ),
+
+        containerTemplate(
+            name: 'confest',
+            image: 'openpolicyagent/conftest:latest',
+            command: 'cat', 
+            ttyEnabled: true,
+        ),
 	
     ],
    volumes: [
@@ -107,6 +114,11 @@ podTemplate(
 
         }//maven
     
+        container('docker') {
+            stage('OPA Conftest') {
+                sh 'test --policy docker-security.rego Dockerfile'
+            }
+        }
 
         container('docker') {
             stage('Build And Push Image') {
@@ -125,8 +137,8 @@ podTemplate(
 
         container('trivy') {   
             stage('Image Scan - Trivy ') {
-                //sh "trivy image -f json -o results.json $IMAGETAG"
-                sh "trivy image -f json -o results.json $IMAGETAG --severity CRITICAL --exit-code 1"
+                sh "trivy image -f json -o results.json $IMAGETAG"
+                //sh "trivy image -f json -o results.json $IMAGETAG --severity CRITICAL --exit-code 1"
                 recordIssues(tools: [trivy(pattern: 'results.json')])
             }
         }//Trivy
