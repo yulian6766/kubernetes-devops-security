@@ -114,7 +114,7 @@ podTemplate(
 
         }//maven
     
-        container('docker') {
+        container('confest') {
             stage('OPA Conftest') {
                 sh 'test --policy docker-security.rego Dockerfile'
             }
