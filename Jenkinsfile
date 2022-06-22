@@ -116,7 +116,7 @@ podTemplate(
     
         container('confest') {
             stage('OPA Conftest') {
-                sh 'test --policy docker-security.rego Dockerfile'
+                sh 'conftest test --policy docker-security.rego Dockerfile'
             }
         }
 
