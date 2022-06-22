@@ -115,7 +115,7 @@ podTemplate(
         }//maven
     
         container('confest') {
-            stage('OPA Conftest') {
+            stage('OPA Conftest - Dockerfile') {
                 sh 'conftest test --policy dockerfile-security.rego Dockerfile'
             }
         }
@@ -142,6 +142,12 @@ podTemplate(
                 recordIssues(tools: [trivy(pattern: 'results.json')])
             }
         }//Trivy
+
+        container('confest') {
+            stage('OPA Conftest - K8s') {
+                sh 'conftest test --policy opa-k8s-security.rego k8s_deployment_service.yaml'
+            }
+        }
 
         container('kubectl') {
             stage('Kubernetes - Prepare namespace') {
