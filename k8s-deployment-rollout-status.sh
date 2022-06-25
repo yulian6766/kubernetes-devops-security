@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 #k8s-deployment-rollout-status.sh
 
