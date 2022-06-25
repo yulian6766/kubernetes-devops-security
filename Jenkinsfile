@@ -62,7 +62,7 @@ podTemplate(
     def deploymentName  = "devsecops"
     def containerName   = "devsecops-container"
     def serviceName     = "devsecops-svc"
-    def imageName       = "yulian6766/numeric-app:${GIT_COMMIT}"
+    def imageName       = "yulian6766/numeric-app:$IMAGETAG"
     def applicationURL  = "http://192.168.99.32:31363/"
     def applicationURI  = "/increment/99"
 	    
