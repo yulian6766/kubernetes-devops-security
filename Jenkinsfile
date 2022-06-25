@@ -52,12 +52,19 @@ podTemplate(
 ) {
     node('slave') {
 	
-	def PROJECT      = 'yulian6766'
-	def SERVICENAME  = 'numeric-app'
-	def REGISTRY_URL = "https://index.docker.io/v1/"
-	def IMAGEVERSION = "beta"
-	def IMAGETAG     = "$PROJECT/$SERVICENAME:$IMAGEVERSION${env.BUILD_NUMBER}"
-	def NAMESPACE    = 'dev'
+	def PROJECT         = 'yulian6766'
+	def SERVICENAME     = 'numeric-app'
+	def REGISTRY_URL    = "https://index.docker.io/v1/"
+	def IMAGEVERSION    = "beta"
+	def IMAGETAG        = "$PROJECT/$SERVICENAME:$IMAGEVERSION${env.BUILD_NUMBER}"
+	def NAMESPACE       = 'dev'
+
+    def deploymentName  = "devsecops"
+    def containerName   = "devsecops-container"
+    def serviceName     = "devsecops-svc"
+    def imageName       = "yulian6766/numeric-app:${GIT_COMMIT}"
+    def applicationURL  = "http://192.168.99.32:31363/"
+    def applicationURI  = "/increment/99"
 	    
         stage('Checkout code') {
             checkout scm
@@ -150,17 +157,19 @@ podTemplate(
         }
 
         container('kubectl') {
-            stage('Kubernetes - Prepare namespace') {
-                sh "kubectl get ns $NAMESPACE || kubectl create ns $NAMESPACE"
-                sh "kubectl get pods --namespace $NAMESPACE"
-		        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
-			        sh "kubectl -n $NAMESPACE create deploy node-app --image siddharth67/node-service:v1"
-			        sh "kubectl -n $NAMESPACE expose deploy node-app --name node-service --port 5000"
-		        }
-		        sh "sed -i.bak 's#replace#$IMAGETAG#g' k8s_deployment_service.yaml"
-	        }
-            stage('Kubernetes Deployment') {
-		        sh "kubectl -n $NAMESPACE apply -f k8s_deployment_service.yaml"
+            stage('K8S Deployment - DEV') {
+                parallel(
+                    "Deployment": {
+                        //withKubeConfig([credentialsId: 'kubeconfig']) {
+                            sh "bash k8s-deployment.sh"
+                        //}
+                    },
+                    "Rollout Status": {
+                        //withKubeConfig([credentialsId: 'kubeconfig']) {
+                            sh "bash k8s-deployment-rollout-status.sh"
+                        //}
+                    }
+                )
             }
         }//kubectl
 
