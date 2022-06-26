@@ -10,6 +10,6 @@ if [[ $? -ne 0 ]]; then
     kubectl -n dev apply -f k8s_deployment_service.yaml
 else
     echo "deployment $2 exist"
-    echo "image name - ${IMAGETAG}"
+    echo "image name - $1"
     kubectl -n dev set image deploy $2 $3=$2 --record=true
 fi
