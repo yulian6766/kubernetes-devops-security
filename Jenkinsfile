@@ -41,6 +41,13 @@ podTemplate(
             command: 'cat', 
             ttyEnabled: true,
         ),
+
+        containerTemplate(
+            name: 'kubesec',
+            image: 'kubesec/kubesec:latest',
+            command: 'cat', 
+            ttyEnabled: true,
+        ),
 	
     ],
    volumes: [
@@ -150,10 +157,20 @@ podTemplate(
             }
         }//Trivy
 
-        container('confest') {
-            stage('OPA Conftest - K8s') {
-                sh 'conftest test --policy opa-k8s-security.rego k8s_deployment_service.yaml'
-            }
+        stage('K8s Vuln Check'){
+            parallel(
+                "OPA Scan": {
+                    container('confest') {
+                        sh 'conftest test --policy opa-k8s-security.rego k8s_deployment_service.yaml'
+                    }//Confest
+                },
+                "Kubesec Scan": {
+                    container('kubesec'){
+                        sh 'sh kubesec-scan.sh'
+                    }//Kubesec
+                }
+            
+            )
         }
 
         container('kubectl') {
