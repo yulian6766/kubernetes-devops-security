@@ -160,13 +160,37 @@ podTemplate(
             stage('K8S Deployment - DEV') {
                 parallel(
                     "Deployment": {
+                        sh '''
+                            sed -i "s#replace#${IMAGETAG}#g" k8s_deployment_service.yaml
+                            kubectl -n default get deployment ${deploymentName} > /dev/null
+
+                            if [[ $? -ne 0 ]]; then
+                                echo "deployment ${deploymentName} doesnt exist"
+                                kubectl -n default apply -f k8s_deployment_service.yaml
+                            else
+                                echo "deployment ${deploymentName} exist"
+                                echo "image name - ${IMAGETAG}"
+                                kubectl -n default set image deploy ${deploymentName} ${containerName}=${IMAGETAG} --record=true
+                            fi
+                        '''
                         //withKubeConfig([credentialsId: 'kubeconfig']) {
-                            sh "bash k8s-deployment.sh"
+                        //   sh "bash k8s-deployment.sh"
                         //}
                     },
                     "Rollout Status": {
+                        sh '''
+                            sleep 60s
+
+                            if [[ $(kubectl -n default rollout status deploy ${deploymentName} --timeout 5s) != *"successfully rolled out"* ]]; 
+                            then     
+	                            echo "Deployment ${deploymentName} Rollout has Failed"
+                                kubectl -n default rollout undo deploy ${deploymentName}
+                                exit 1;
+                            else
+	                            echo "Deployment ${deploymentName} Rollout is Success"
+                        '''
                         //withKubeConfig([credentialsId: 'kubeconfig']) {
-                            sh "bash k8s-deployment-rollout-status.sh"
+                        //    sh "bash k8s-deployment-rollout-status.sh"
                         //}
                     }
                 )
