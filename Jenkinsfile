@@ -162,15 +162,15 @@ podTemplate(
                     "Deployment": {
                         sh '''
                             sed -i "s#replace#${IMAGETAG}#g" k8s_deployment_service.yaml
-                            kubectl -n default get deployment ${deploymentName} > /dev/null
+                            kubectl -n dev get deployment ${deploymentName} > /dev/null
 
                             if [[ $? -ne 0 ]]; then
                                 echo "deployment ${deploymentName} doesnt exist"
-                                kubectl -n default apply -f k8s_deployment_service.yaml
+                                kubectl -n dev apply -f k8s_deployment_service.yaml
                             else
                                 echo "deployment ${deploymentName} exist"
                                 echo "image name - ${IMAGETAG}"
-                                kubectl -n default set image deploy ${deploymentName} ${containerName}=${IMAGETAG} --record=true
+                                kubectl -n dev set image deploy ${deploymentName} ${containerName}=${IMAGETAG} --record=true
                             fi
                         '''
                         //withKubeConfig([credentialsId: 'kubeconfig']) {
@@ -181,13 +181,14 @@ podTemplate(
                         sh '''
                             sleep 60s
 
-                            if [[ $(kubectl -n default rollout status deploy ${deploymentName} --timeout 5s) != *"successfully rolled out"* ]]; 
+                            if [[ $(kubectl -n dev rollout status deploy ${deploymentName} --timeout 5s) != *"successfully rolled out"* ]]; 
                             then     
 	                            echo "Deployment ${deploymentName} Rollout has Failed"
-                                kubectl -n default rollout undo deploy ${deploymentName}
+                                kubectl -n dev rollout undo deploy ${deploymentName}
                                 exit 1;
                             else
 	                            echo "Deployment ${deploymentName} Rollout is Success"
+                            fi
                         '''
                         //withKubeConfig([credentialsId: 'kubeconfig']) {
                         //    sh "bash k8s-deployment-rollout-status.sh"
