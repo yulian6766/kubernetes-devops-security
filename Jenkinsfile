@@ -160,40 +160,10 @@ podTemplate(
             stage('K8S Deployment - DEV') {
                 parallel(
                     "Deployment": {
-                        //
-                        //sh '''
-                        //    sed -i "s#replace#${IMAGETAG}#g" k8s_deployment_service.yaml
-                        //    kubectl -n dev get deployment ${deploymentName} > /dev/null
-
-                        //    if [[ $? -ne 0 ]]; then
-                        //        echo "deployment ${deploymentName} doesnt exist"
-                        //        kubectl -n dev apply -f k8s_deployment_service.yaml
-                        //    else
-                        //        echo "deployment ${deploymentName} exist"
-                        //        echo "image name - ${IMAGETAG}"
-                        //        kubectl -n dev set image deploy ${deploymentName} ${containerName}=${IMAGETAG} --record=true
-                        //    fi
-                        //'''
-                        //withKubeConfig([credentialsId: 'kubeconfig']) {
-                           sh "sh k8s-deployment.sh"
-                        //}
+                        sh "sh k8s-deployment.sh $IMAGETAG $deploymentName $containerName"
                     },
                     "Rollout Status": {
-                        //sh '''
-                        //    sleep 60s
-
-                        //    if [[ $(kubectl -n dev rollout status deploy ${deploymentName} --timeout 5s) != *"successfully rolled out"* ]]; 
-                        //    then     
-	                    //        echo "Deployment ${deploymentName} Rollout has Failed"
-                        //        kubectl -n dev rollout undo deploy ${deploymentName}
-                        //        exit 1;
-                        //    else
-	                    //        echo "Deployment ${deploymentName} Rollout is Success"
-                        //    fi
-                        //'''
-                        //withKubeConfig([credentialsId: 'kubeconfig']) {
-                            sh "sh k8s-deployment-rollout-status.sh"
-                        //}
+                        sh "sh k8s-deployment-rollout-status.sh $deploymentName"
                     }
                 )
             }
