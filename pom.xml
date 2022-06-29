@@ -116,4 +116,11 @@
 		</plugins>
 	</build>
 
+	<repositories>
+		<repository>
+		  <id>maven-group</id>
+		  <url>http://192.168.99.33:32000/repository/maven-group/</url>
+		</repository>
+	  </repositories>
+
 </project>
