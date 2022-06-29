@@ -44,7 +44,7 @@ podTemplate(
 
         containerTemplate(
             name: 'kubesec',
-            image: 'kubesec/kubesec:latest',
+            image: 'kubesec/kubesec:512c5e0',
             command: 'cat', 
             ttyEnabled: true,
         ),
@@ -165,9 +165,9 @@ podTemplate(
                     }//Confest
                 },
                 "Kubesec Scan": {
-                    //container('kubesec'){
+                    container('kubesec'){
                         sh 'sh kubesec-scan.sh'
-                    //}//Kubesec
+                    }//Kubesec
                 }
             
             )
