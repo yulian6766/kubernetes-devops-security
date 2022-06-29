@@ -165,9 +165,9 @@ podTemplate(
                     }//Confest
                 },
                 "Kubesec Scan": {
-                    container('kubesec'){
+                    //container('kubesec'){
                         sh 'sh kubesec-scan.sh'
-                    }//Kubesec
+                    //}//Kubesec
                 }
             
             )
