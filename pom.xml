@@ -133,4 +133,21 @@
 		</repository>   
 	</repositories>
 
+	<pluginRepositories>
+		<pluginRepository>
+			<id>maven-group</id>
+			<url>http://192.168.99.33:32000/repository/maven-group/</url>
+			<!--snapshots>
+				<enabled>false</enabled>
+			</snapshots-->
+		</pluginRepository>
+		<pluginRepository>
+			<id>central</id>
+			<url>http://192.168.99.33:32000/repository/maven-group/</url>
+			<!--releases>
+				<enabled>false</enabled>
+			</releases-->
+		</pluginRepository>
+	</pluginRepositories>
+
 </project>
