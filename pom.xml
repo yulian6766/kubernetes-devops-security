@@ -123,13 +123,13 @@
 		</repository>
 		<repository>
 			<id>central</id>
-			<url>http://repo1.maven.org/maven2</url>
-			<releases>
+			<url>http://192.168.99.33:32000/repository/maven-group/</url>
+			<!--releases>
 					<enabled>false</enabled>
 			</releases>
 			<snapshots>
 					<enabled>false</enabled>
-			</snapshots>
+			</snapshots-->
 		</repository>   
 	</repositories>
 
