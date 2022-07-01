@@ -30,4 +30,6 @@
                   mountPath: /nexus-data
           volumes:
             - name: nexus-data
-              emptyDir: {}
+              persistentVolumeClaim:
+                claimName: nexus-pvc
+                readOnly: false

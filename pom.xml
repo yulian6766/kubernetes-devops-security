@@ -121,6 +121,16 @@
 		  <id>maven-group</id>
 		  <url>http://192.168.99.33:32000/repository/maven-group/</url>
 		</repository>
-	  </repositories>
+		<repository>
+			<id>central</id>
+			<url>http://repo1.maven.org/maven2</url>
+			<releases>
+					<enabled>false</enabled>
+			</releases>
+			<snapshots>
+					<enabled>false</enabled>
+			</snapshots>
+		</repository>   
+	</repositories>
 
 </project>
