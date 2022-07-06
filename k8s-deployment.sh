@@ -13,3 +13,5 @@ else
     echo "image name - $1"
     kubectl -n dev set image deploy $2 $3=$2 --record=true
 fi
+
+kubectl -n dev apply -f k8s_deployment_service.yaml

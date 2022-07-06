@@ -32,7 +32,6 @@ podTemplate(
             image: 'aquasec/trivy:latest',
             command: 'cat', 
             ttyEnabled: true,
-            //args: 'infinity'
         ),
 
         containerTemplate(
@@ -152,7 +151,6 @@ podTemplate(
         container('trivy') {   
             stage('Image Scan - Trivy ') {
                 sh "trivy image -f json -o results.json $IMAGETAG"
-                //sh "trivy image -f json -o results.json $IMAGETAG --severity CRITICAL --exit-code 1"
                 recordIssues(tools: [trivy(pattern: 'results.json')])
             }
         }//Trivy
@@ -167,23 +165,6 @@ podTemplate(
                 "Kubesec Scan": {
                     container('kubesec'){
                         sh 'sh kubesec-scan.sh'
-                        //sh '''
-                        //    scan_result=$(scan /dev/stdin < k8s_deployment_service.yaml)
-                        //    scan_message=$(scan /dev/stdin < k8s_deployment_service.yaml | jq .[].message -r)
-                        //    scan_score=$(scan /dev/stdin < k8s_deployment_service.yaml | jq .[].score)
-	
-                        //    # Kubesec scan result processing
-                        //    # echo "Scan Score : $scan_score"
-
-	                    //    if [[ "${scan_score}" -ge 5 ]]; then
-	                    //    echo "Score is $scan_score"
-	                    //        echo "Kubesec Scan $scan_message"
-	                    //    else
-	                    //        echo "Score is $scan_score, which is less than or equal to 5."
-	                    //        echo "Scanning Kubernetes Resource has Failed"
-	                    //        exit 1;
-	                    //    fi;
-                        //'''
                     }//Kubesec
                 }
             
@@ -203,23 +184,6 @@ podTemplate(
             }
         }//kubectl
 
-        //post {
-        //    always {
-        //       junit 'target/surefire-reports/*.xml'
-        //        jacoco execPattern: 'target/jacoco.exec'
-        //        pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml'
-        //        dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
-        //    }
-
-            // success {
-
-            // }
-
-            // failure {
-
-            // }
-        //}//post
-
     }//node
+
 }//podTemplate
-// Prueba de compilación
