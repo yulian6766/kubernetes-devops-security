@@ -45,7 +45,7 @@ podTemplate(
         containerTemplate(
             name: 'kubesec',
             image: 'kubesec/kubesec:512c5e0',
-            command: 'scan', 
+            //command: 'scan', 
             ttyEnabled: true,
         ),
 	
