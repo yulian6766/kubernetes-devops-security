@@ -44,8 +44,8 @@ podTemplate(
 
         containerTemplate(
             name: 'kubesec',
-            image: 'kubesec/kubesec:512c5e0',
-            //command: 'scan', 
+            image: 'kubesec/kubesec:latest',
+            command: 'scan', 
             ttyEnabled: true,
         ),
 	
@@ -165,7 +165,7 @@ podTemplate(
                     }//Confest
                 },
                 "Kubesec Scan": {
-                    container('kubesec'){
+                    //container('kubesec'){
                         sh 'sh kubesec-scan.sh'
                         //sh '''
                         //    scan_result=$(scan /dev/stdin < k8s_deployment_service.yaml)
@@ -184,7 +184,7 @@ podTemplate(
 	                    //        exit 1;
 	                    //    fi;
                         //'''
-                    }//Kubesec
+                    //}//Kubesec
                 }
             
             )

@@ -13,10 +13,18 @@
 # scan_message=$(docker run -i kubesec/kubesec:512c5e0 scan /dev/stdin < k8s_deployment_service.yaml | jq .[].message -r)
 # scan_score=$(docker run -i kubesec/kubesec:512c5e0 scan /dev/stdin < k8s_deployment_service.yaml | jq .[].score)
 
-scan_result=$(scan /dev/stdin < k8s_deployment_service.yaml)
-scan_message=$(scan /dev/stdin < k8s_deployment_service.yaml | jq .[].message -r)
-scan_score=$(scan /dev/stdin < k8s_deployment_service.yaml | jq .[].score)
-	
+# using local
+#scan_result=$(scan /dev/stdin < k8s_deployment_service.yaml)
+#scan_message=$(scan /dev/stdin < k8s_deployment_service.yaml | jq .[].message -r)
+#scan_score=$(scan /dev/stdin < k8s_deployment_service.yaml | jq .[].score)
+
+# using K8s agent
+
+scan_result=$(curl -sSX POST --data-binary @"k8s_deployment_service.yaml" http://localhost:8080/scan)
+scan_message=$(curl -sSX POST --data-binary @"k8s_deployment_service.yaml" http://localhost:8080/scan | jq .[0].message -r ) 
+scan_score=$(curl -sSX POST --data-binary @"k8s_deployment_service.yaml" http://localhost:8080/scan | jq .[0].score ) 
+
+
     # Kubesec scan result processing
     # echo "Scan Score : $scan_score"
 
