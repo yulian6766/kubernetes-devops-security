@@ -3,9 +3,9 @@
 #kubesec-scan.sh
 
 # using kubesec v2 api
-#scan_result=$(curl -sSX POST --data-binary @"k8s_deployment_service.yaml" https://v2.kubesec.io/scan)
-#scan_message=$(curl -sSX POST --data-binary @"k8s_deployment_service.yaml" https://v2.kubesec.io/scan | jq .[0].message -r ) 
-#scan_score=$(curl -sSX POST --data-binary @"k8s_deployment_service.yaml" https://v2.kubesec.io/scan | jq .[0].score ) 
+scan_result=$(curl -sSX POST --data-binary @"k8s_deployment_service.yaml" https://v2.kubesec.io/scan)
+scan_message=$(curl -sSX POST --data-binary @"k8s_deployment_service.yaml" https://v2.kubesec.io/scan | jq .[0].message -r ) 
+scan_score=$(curl -sSX POST --data-binary @"k8s_deployment_service.yaml" https://v2.kubesec.io/scan | jq .[0].score ) 
 
 
 # using kubesec docker image for scanning
@@ -19,10 +19,9 @@
 #scan_score=$(scan /dev/stdin < k8s_deployment_service.yaml | jq .[].score)
 
 # using K8s agent
-
-scan_result=$(curl -sSX POST --data-binary @"k8s_deployment_service.yaml" http://localhost:8080/scan)
-scan_message=$(curl -sSX POST --data-binary @"k8s_deployment_service.yaml" http://localhost:8080/scan | jq .[0].message -r ) 
-scan_score=$(curl -sSX POST --data-binary @"k8s_deployment_service.yaml" http://localhost:8080/scan | jq .[0].score ) 
+#scan_result=$(curl -sSX POST --data-binary @"k8s_deployment_service.yaml" http://localhost:8080/scan)
+#scan_message=$(curl -sSX POST --data-binary @"k8s_deployment_service.yaml" http://localhost:8080/scan | jq .[0].message -r ) 
+#scan_score=$(curl -sSX POST --data-binary @"k8s_deployment_service.yaml" http://localhost:8080/scan | jq .[0].score ) 
 
 
     # Kubesec scan result processing
