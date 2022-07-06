@@ -45,7 +45,7 @@ podTemplate(
         containerTemplate(
             name: 'kubesec',
             image: 'kubesec/kubesec:latest',
-            //command: 'ls', 
+            command: 'scan', 
             ttyEnabled: true,
         ),
 	
@@ -166,24 +166,24 @@ podTemplate(
                 },
                 "Kubesec Scan": {
                     container('kubesec'){
-                        //sh 'sh kubesec-scan.sh'
-                        sh '''
-                            scan_result=$(scan /dev/stdin < k8s_deployment_service.yaml)
-                            scan_message=$(scan /dev/stdin < k8s_deployment_service.yaml | jq .[].message -r)
-                            scan_score=$(scan /dev/stdin < k8s_deployment_service.yaml | jq .[].score)
+                        sh 'sh kubesec-scan.sh'
+                        //sh '''
+                        //    scan_result=$(scan /dev/stdin < k8s_deployment_service.yaml)
+                        //    scan_message=$(scan /dev/stdin < k8s_deployment_service.yaml | jq .[].message -r)
+                        //    scan_score=$(scan /dev/stdin < k8s_deployment_service.yaml | jq .[].score)
 	
-                            # Kubesec scan result processing
-                            # echo "Scan Score : $scan_score"
+                        //    # Kubesec scan result processing
+                        //    # echo "Scan Score : $scan_score"
 
-	                        if [[ "${scan_score}" -ge 5 ]]; then
-	                        echo "Score is $scan_score"
-	                            echo "Kubesec Scan $scan_message"
-	                        else
-	                            echo "Score is $scan_score, which is less than or equal to 5."
-	                            echo "Scanning Kubernetes Resource has Failed"
-	                            exit 1;
-	                        fi;
-                        '''
+	                    //    if [[ "${scan_score}" -ge 5 ]]; then
+	                    //    echo "Score is $scan_score"
+	                    //        echo "Kubesec Scan $scan_message"
+	                    //    else
+	                    //        echo "Score is $scan_score, which is less than or equal to 5."
+	                    //        echo "Scanning Kubernetes Resource has Failed"
+	                    //        exit 1;
+	                    //    fi;
+                        //'''
                     }//Kubesec
                 }
             
