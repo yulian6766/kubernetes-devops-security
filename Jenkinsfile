@@ -45,7 +45,7 @@ podTemplate(
         containerTemplate(
             name: 'kubesec',
             image: 'kubesec/kubesec:latest',
-            command: 'cat', 
+            command: 'ls', 
             ttyEnabled: true,
         ),
 	
