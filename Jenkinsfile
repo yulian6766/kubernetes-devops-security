@@ -116,22 +116,39 @@ podTemplate(
 		        archive 'target/*.jar' //so that they can be downloaded later
 	        }
 
-            stage('Vulnerability Scan - Dependency Check ') {
-                try {
-                    sh "mvn dependency-check:check"
-                }
-                finally {
-                    dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
-                }
-            }
-
         }//maven
-    
-        container('confest') {
-            stage('OPA Conftest - Dockerfile') {
-                sh 'conftest test --policy dockerfile-security.rego Dockerfile'
-            }
+
+        stage('Docker Vuln Scan'){
+            parallel(
+                "Dependency Check": {
+                    container('maven') {
+                        try {
+                            sh "mvn dependency-check:check"
+                        }
+                        finally {
+                            dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
+                        }
+                    }//maven
+                },//Dep Check
+                
+                "OPA Conftest": {
+                    container('confest') {
+                        sh 'conftest test --policy dockerfile-security.rego Dockerfile'
+                    }//confest
+                },//Opa Conf
+                
+                "Trivy Scan": {
+                    container('trivy') {  
+                        sh "dockerImageName=$(awk 'NR==1 {print $2}' Dockerfile)"          
+                        sh "trivy image -f json -o results.json $dockerImageName"
+                        recordIssues(tools: [trivy(pattern: 'results.json')])
+                    }//Trivy
+                }//Trivy Scan
+
+            )//Parallel
         }
+
+
 
         container('docker') {
             stage('Build And Push Image') {
@@ -146,14 +163,6 @@ podTemplate(
                 
             }
         }//docker
-	
-
-        container('trivy') {   
-            stage('Image Scan - Trivy ') {
-                sh "trivy image -f json -o results.json $IMAGETAG"
-                recordIssues(tools: [trivy(pattern: 'results.json')])
-            }
-        }//Trivy
 
         stage('K8s Vuln Check'){
             parallel(
@@ -161,15 +170,22 @@ podTemplate(
                     container('confest') {
                         sh 'conftest test --policy opa-k8s-security.rego k8s_deployment_service.yaml'
                     }//Confest
-                },
+                }, //OPA Scan
+
                 "Kubesec Scan": {
                     container('kubesec'){
                         sh 'sh kubesec-scan.sh'
                     }//Kubesec
-                }
-            
-            )
-        }
+                }, //Kubesec Scan
+
+                "Trivy Scan": {
+                    container('trivy') {   
+                        sh "trivy image -f json -o results.json $IMAGETAG"
+                        recordIssues(tools: [trivy(pattern: 'results.json')])
+                    }//Trivy
+                }//Trivy Scan
+            )//Parallel
+        }//K8s Vuln Check
 
         container('kubectl') {
             stage('K8S Deployment - DEV') {
