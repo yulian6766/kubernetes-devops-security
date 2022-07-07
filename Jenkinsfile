@@ -140,9 +140,9 @@ podTemplate(
                 
                 "Trivy Scan": {
                     container('trivy') {  
-                        sh "dockerImageName=$(awk 'NR==1 {print \$2}' Dockerfile)"
-                        sh "echo $dockerImageName"
-                        sh "trivy image -f json -o results.json $dockerImageName"
+                        sh '''dockerImageName=$(awk 'NR==1 {print $2}' Dockerfile)
+                            echo $dockerImageName
+                            trivy image -f json -o results.json $dockerImageName'''
                         recordIssues(tools: [trivy(pattern: 'results.json')])
                     }//Trivy
                 }//Trivy Scan
