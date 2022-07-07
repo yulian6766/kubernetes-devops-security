@@ -71,6 +71,7 @@ podTemplate(
     def imageName       = "yulian6766/numeric-app:$IMAGETAG"
     def applicationURL  = "http://192.168.99.32:31363/"
     def applicationURI  = "/increment/99"
+    def dockerImageName = ""
 	    
         stage('Checkout code') {
             checkout scm
@@ -140,7 +141,7 @@ podTemplate(
                 "Trivy Scan": {
                     container('trivy') {  
                         sh '''dockerImageName=$(awk 'NR==1 {print $2}' Dockerfile)'''
-                        sh '''trivy image -f json -o results.json $dockerImageName'''
+                        sh "trivy image -f json -o results.json $dockerImageName"
                         recordIssues(tools: [trivy(pattern: 'results.json')])
                     }//Trivy
                 }//Trivy Scan
