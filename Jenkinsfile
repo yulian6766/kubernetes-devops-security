@@ -69,7 +69,7 @@ podTemplate(
     def containerName   = "devsecops-container"
     def serviceName     = "devsecops-svc"
     def imageName       = "yulian6766/numeric-app:$IMAGETAG"
-    def applicationURL  = "http://192.168.99.32:31363/"
+    def applicationURL  = "http://192.168.99.31:32399/"
     def applicationURI  = "/increment/99"
     def dockerImageName = ""
 	    
@@ -201,6 +201,17 @@ podTemplate(
                     }//Rollout
                 )//Parallel
             }//K8S Deployment - DEV
+
+            stage('Integration Tests - DEV') {
+                script {
+                    try {
+                        sh "bash integration-test.sh $serviceName $applicationURL $applicationURI"
+                    } catch (e) {
+                        sh "kubectl -n dev rollout undo deploy ${deploymentName}"
+                        throw e
+                    }
+                }
+            }
         }//kubectl
 
     }//node
