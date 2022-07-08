@@ -80,7 +80,8 @@ podTemplate(
         container('maven') {
             stage('Build Artifact - Maven') {
                 sh 'mvn clean package -DskipTests=true'
-            }
+            }//Build
+
             stage('Test Artifact - Maven JaCoCo') {
                 try {
                     sh 'mvn test'
