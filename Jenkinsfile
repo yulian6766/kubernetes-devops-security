@@ -75,7 +75,7 @@ podTemplate(
 	    
         stage('Checkout code') {
             checkout scm
-        }
+        }//SCM
         
         container('maven') {
             stage('Build Artifact - Maven') {
@@ -89,7 +89,7 @@ podTemplate(
                     junit '**/target/surefire-reports/*.xml'
 		            jacoco execPattern: 'target/jacoco.exec'
                 }
-            }
+            }//JaCoCo
  	    
 	        stage('Mutation Tests - PIT') {
       		    try {
@@ -100,7 +100,7 @@ podTemplate(
           	    finally {        		
           		    pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml' 
       	        }
-	        }
+	        }//PIT
             
 	        stage('SonarQube - SAST') {
 		        withSonarQubeEnv('SonarQube') {
@@ -111,11 +111,11 @@ podTemplate(
             			waitForQualityGate abortPipeline: true
           		    }
         	    }
-            }
+            }//SAST
           
 	        stage('Archive artifact') {
 		        archive 'target/*.jar' //so that they can be downloaded later
-	        }
+	        }//archive artifact
 
         }//maven
 
@@ -142,7 +142,7 @@ podTemplate(
                     container('trivy') {  
                         sh '''dockerImageName=$(awk 'NR==2 {print $2}' Dockerfile)
                             trivy image -f json -o docker_results.json $dockerImageName'''
-                        recordIssues(tools: [trivy(pattern: 'docker_results.json')])
+                        recordIssues(tools: [trivy-docker(pattern: 'docker_results.json')])
                     }//Trivy
                 }//Trivy Scan
 
@@ -160,9 +160,9 @@ podTemplate(
                     	sh 'ls -alh'
                 	}
                 image.push()
-			    }
+			    }//docker withRegistry
                 
-            }
+            }//Build And Push Image
         }//docker
 
         stage('K8s Vuln Check'){
@@ -182,7 +182,7 @@ podTemplate(
                 "Trivy Scan": {
                     container('trivy') {   
                         sh "trivy image -f json -o k8s_results.json $IMAGETAG"
-                        recordIssues(tools: [trivy(pattern: 'k8s_results.json')])
+                        recordIssues(tools: [trivy-k8s(pattern: 'k8s_results.json')])
                     }//Trivy
                 }//Trivy Scan
             )//Parallel
@@ -193,12 +193,12 @@ podTemplate(
                 parallel(
                     "Deployment": {
                         sh "sh k8s-deployment.sh $IMAGETAG $deploymentName $containerName"
-                    },
+                    },//Deployment
                     "Rollout Status": {
                         sh "sh k8s-deployment-rollout-status.sh $deploymentName"
-                    }
-                )
-            }
+                    }//Rollout
+                )//Parallel
+            }//K8S Deployment - DEV
         }//kubectl
 
     }//node
