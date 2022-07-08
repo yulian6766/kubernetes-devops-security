@@ -183,7 +183,7 @@ podTemplate(
                 "Trivy Scan": {
                     container('trivy') {   
                         sh "trivy image -f json -o k8s_results.json $IMAGETAG"
-                        recordIssues aggregatingResults: true (tools: [trivy(pattern: 'k8s_results.json')])
+                        recordIssues (aggregatingResults: true, tools: [trivy(pattern: 'k8s_results.json')])
                     }//Trivy
                 }//Trivy Scan
             )//Parallel
