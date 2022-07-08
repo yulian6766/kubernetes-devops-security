@@ -143,7 +143,7 @@ podTemplate(
                     container('trivy') {  
                         sh '''dockerImageName=$(awk 'NR==2 {print $2}' Dockerfile)
                             trivy image -f json -o docker_results.json $dockerImageName'''
-                        recordIssues(tools: [trivy-docker(pattern: 'docker_results.json')])
+                        recordIssues(id: trivy-docker, tools: [trivy(pattern: 'docker_results.json')])
                     }//Trivy
                 }//Trivy Scan
 
@@ -183,7 +183,7 @@ podTemplate(
                 "Trivy Scan": {
                     container('trivy') {   
                         sh "trivy image -f json -o k8s_results.json $IMAGETAG"
-                        recordIssues(tools: [trivy-k8s(pattern: 'k8s_results.json')])
+                        recordIssues(tools: [trivy(pattern: 'k8s_results.json')])
                     }//Trivy
                 }//Trivy Scan
             )//Parallel
