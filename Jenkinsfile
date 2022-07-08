@@ -183,6 +183,7 @@ podTemplate(
                 "Trivy Scan": {
                     container('trivy') {   
                         sh "trivy image -f json -o k8s_results.json $IMAGETAG"
+                        sh "ls -ltr"
                         recordIssues (id: 'trivy-k8s', name: 'trivy-k8s', tools: [trivy(pattern: 'k8s_results.json')])
                     }//Trivy
                 }//Trivy Scan
