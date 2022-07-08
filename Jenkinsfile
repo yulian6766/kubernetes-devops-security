@@ -207,7 +207,7 @@ podTemplate(
                     try {
                         sh "bash integration-test.sh $serviceName $applicationURL $applicationURI"
                     } catch (e) {
-                        sh "kubectl -n dev rollout undo deploy ${deploymentName}"
+                        sh "kubectl -n dev rollout undo deploy $deploymentName"
                         throw e
                     }
                 }
