@@ -69,7 +69,7 @@ podTemplate(
     def containerName   = "devsecops-container"
     def serviceName     = "devsecops-svc"
     def imageName       = "yulian6766/numeric-app:$IMAGETAG"
-    def applicationURL  = "http://192.168.99.31:32399/"
+    def applicationURL  = "http://192.168.99.31:32399"
     def applicationURI  = "/increment/99"
     def dockerImageName = ""
 	    
@@ -191,7 +191,15 @@ podTemplate(
         }//K8s Vuln Check
 
         container('kubectl') {
-            stage('K8S Deployment - DEV') {
+            
+                stage('Kubernetes - Prepare namespace') {
+                    sh "kubectl get ns $NAMESPACE || kubectl create ns $NAMESPACE"
+                    sh "kubectl get pods --namespace $NAMESPACE"
+		        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
+			        sh "kubectl -n $NAMESPACE create deploy node-app --image siddharth67/node-service:v1"
+			        sh "kubectl -n $NAMESPACE expose deploy node-app --name node-service --port 5000"
+		        }
+		
                 parallel(
                     "Deployment": {
                         sh "sh k8s-deployment.sh $IMAGETAG $deploymentName $containerName"
