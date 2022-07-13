@@ -22,7 +22,8 @@ podTemplate(
 	    
         containerTemplate(
             name: 'kubectl', 
-            image: 'lachlanevenson/k8s-kubectl:latest', 
+            //image: 'lachlanevenson/k8s-kubectl:latest', 
+            image: 'juntezhang/kubectl-jq:latest', 
             command: 'cat', 
             ttyEnabled: true
         ),
