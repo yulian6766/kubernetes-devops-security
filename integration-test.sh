@@ -7,7 +7,7 @@ sleep 5s
 PORT=$(kubectl -n dev get svc $1 -o json | jq .spec.ports[].nodePort)
 
 echo $PORT
-echo $2:$PORT/$3
+echo $2:$PORT$3
 
 if [[ ! -z "$PORT" ]];
 then
