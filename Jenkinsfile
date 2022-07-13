@@ -48,6 +48,13 @@ podTemplate(
             command: 'cat', 
             ttyEnabled: true,
         ),
+
+        containerTemplate(
+            name: 'owasp-zap',
+            image: 'owasp/zap2docker-stable:latest',
+            command: 'cat', 
+            ttyEnabled: true,
+        ),
 	
     ],
    volumes: [
