@@ -6,9 +6,9 @@ metadata:
   labels:
     app: sonar
 data:
-  SONARQUBE_JDBC_URL: "jdbc:postgresql://postgresql:5432/sonar_db"
-  SONARQUBE_JDBC_USERNAME: "sonar_user"
-  SONARQUBE_JDBC_PASSWORD: "S0N4RQUB3"
+  #SONARQUBE_JDBC_URL: "jdbc:postgresql://postgresql:5432/sonar_db"
+  #SONARQUBE_JDBC_USERNAME: "sonar_user"
+  #SONARQUBE_JDBC_PASSWORD: "S0N4RQUB3"
   JAVA_OPTS: "-Duser.timezone=Asia/Jakarta -Xmx2048m"
 ---
 apiVersion: apps/v1
@@ -49,6 +49,22 @@ spec:
         envFrom:
         - configMapRef:
             name: sonar-config
+        env:
+        - name: SONARQUBE_JDBC_URL
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: DB_ADDR
+        - name: SONARQUBE_JDBC_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: DB_USER
+        - name: SONARQUBE_JDBC_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: DB_PASSWORD
         volumeMounts:
         - name: app-pvc
           mountPath: "/opt/sonarqube/data/"

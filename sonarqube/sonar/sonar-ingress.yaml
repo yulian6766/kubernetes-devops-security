@@ -12,7 +12,7 @@ spec:
   #    - myfancy.domain.com
   #    secretName: my-fancy-certs
   rules:
-  - host: sonar
+  - host: sonar.myapp.com
     http:
       paths:
       - path: /
