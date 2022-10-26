@@ -1,20 +1,20 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: postgresql
-  namespace: sonar
-  labels:
-    app: postgresql
-data:
-  POSTGRESQL_USERNAME: sonar_user
-  POSTGRESQL_DATABASE: sonar_db
-  POSTGRESQL_PASSWORD: S0N4RQUB3
+#apiVersion: v1
+#kind: ConfigMap
+#metadata:
+#  name: postgresql
+#  namespace: postgres
+#  labels:
+#    app: postgresql
+#data:
+#  POSTGRESQL_USERNAME: sonar_user
+#  POSTGRESQL_DATABASE: sonar_db
+#  POSTGRESQL_PASSWORD: S0N4RQUB3
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: postgresql
-  namespace: sonar
+  name: postgres-service
+  namespace: postgres
   labels:
     app: postgresql
 spec:
@@ -28,7 +28,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: postgresql
-  namespace: sonar
+  namespace: postgres
   labels:
     app: postgresql
 spec:
@@ -52,11 +52,21 @@ spec:
         ports:
         - containerPort: 5432
         env:
-        - name: ALLOW_EMPTY_PASSWORD
-          value: "yes"
-        envFrom:
-        - configMapRef:
-            name: postgresql
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: DB_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: DB_PASSWORD
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: DB_DATABASE
         volumeMounts:
         - name: postgresql
           mountPath: /bitnami/postgresql
