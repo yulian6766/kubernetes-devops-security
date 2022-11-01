@@ -11,6 +11,6 @@ spec:
     storage: 50Gi
   persistentVolumeReclaimPolicy: Retain
   nfs:
-    server: kube-master
+    server: kubemaster
     path: "/mnt/nfs/k8s/sonar"
     readOnly: false

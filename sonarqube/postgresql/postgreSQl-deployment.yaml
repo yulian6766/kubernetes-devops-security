@@ -47,7 +47,7 @@ spec:
         fsGroup: 1000 
       containers:
       - name: postgress
-        image: bitnami/postgresql
+        image: bitnami/postgresql:14
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5432
