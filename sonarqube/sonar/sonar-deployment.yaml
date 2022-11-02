@@ -11,6 +11,21 @@ data:
   #SONARQUBE_JDBC_PASSWORD: "S0N4RQUB3"
   JAVA_OPTS: "-Duser.timezone=Asia/Jakarta -Xmx2048m"
 ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sonar-service
+  namespace: sonar
+  labels:
+    app: sonar
+spec:
+  ports:
+  - port: 9000
+    name: sonar
+  selector:
+    app: sonar
+  type: ClusterIP
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:

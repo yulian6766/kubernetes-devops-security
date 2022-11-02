@@ -1,8 +1,8 @@
 apiVersion: "networking.k8s.io/v1"
 kind: Ingress
 metadata:
-  name: jenkins-ingress
-  namespace: jenkins
+  name: nexus-ingress
+  namespace: nexus
   annotations:
     kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
@@ -12,13 +12,13 @@ spec:
   #    - myfancy.domain.com
   #    secretName: my-fancy-certs
   rules:
-  - host: jenkins.myapp.com
+  - host: nexus.myapp.com
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: jenkins-service
+            name: nexus-service
             port:
-              number: 80
+              number: 8081

@@ -23,6 +23,7 @@ spec:
     name: postgresql
   selector:
     app: postgresql
+  type: ClusterIP
 ---
 apiVersion: apps/v1
 kind: Deployment

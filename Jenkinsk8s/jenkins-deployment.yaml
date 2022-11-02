@@ -6,7 +6,7 @@ items:
   kind: Deployment
   metadata:
     name: "jenkins-master-deployment"
-    labels:
+    labels: 
       app: jenkins-master
       version: "latest"
       group: "jenkins"
@@ -27,7 +27,7 @@ items:
       spec:
         containers:
           - name: "jenkins-master"
-            image: "yulian6766/jenkinscimaster:latest"
+            image: "keaz/jenkins-master:alpine"
             imagePullPolicy: "IfNotPresent"
             env:
               - name: JAVA_OPTS
@@ -42,49 +42,6 @@ items:
                 mountPath: "/var/jenkins_home"
         volumes:
           - name: jenkins-home
-            persistentVolumeClaim:
+            persistentVolumeClaim: 
               claimName: "jenkins-volume-claim"
-              readOnly: false
-- apiVersion: "v1"
-  kind: "Service"
-  metadata:
-    labels:
-      app: "jenkins-master"
-      version: "latest"
-      group: "jenkins"
-    namespace: "jenkins"
-    name: "jenkins-master-service"
-  spec:
-    ports:
-    - name: "http"
-      port: 80
-      targetPort: 8080
-    - name: "jnlp"
-      port: 50000
-      targetPort: 50000
-    selector:
-      app: "jenkins-master"
-      version: "latest"
-      group: "jenkins"
-    type: "ClusterIP"
-- apiVersion: "networking.k8s.io/v1"
-  kind: "Ingress"
-  metadata:
-    labels:
-      app: "jenkins-master"
-      version: "latest"
-      group: "jenkins"
-    namespace: "jenkins"
-    name: "jenkins-master-ingress"
-  spec:
-    rules:
-    - host: "jenkins"
-      http:
-        paths:
-        - path: "/"
-          pathType: Prefix
-          backend:
-            service:
-              name: "jenkins-master-service"
-              port:
-                number: 80
+              readOnly: false 
