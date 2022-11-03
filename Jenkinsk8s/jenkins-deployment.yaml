@@ -5,7 +5,7 @@ items:
 - apiVersion: apps/v1
   kind: Deployment
   metadata:
-    name: "jenkins-master-deployment"
+    name: "jenkins-master"
     labels: 
       app: jenkins-master
       version: "latest"
