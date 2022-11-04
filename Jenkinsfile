@@ -75,7 +75,7 @@ podTemplate(
 
     def deploymentName  = "devsecops"
     def containerName   = "devsecops-container"
-    def serviceName     = "devsecops-svc"
+    def serviceName     = "node-service" //"devsecops-svc"
     def imageName       = "yulian6766/numeric-app:$IMAGETAG"
     def applicationURL  = "http://node-service.dev.svc.cluster.local"
     def applicationURI  = "/increment/99"
@@ -219,14 +219,16 @@ podTemplate(
             }//K8S Deployment - DEV
 
             stage('Integration Tests - DEV') {
-                script {
-                    try {
-                        sh "bash integration-test.sh $serviceName $applicationURL $applicationURI"
-                    } catch (e) {
-                        sh "kubectl -n dev rollout undo deploy $deploymentName"
-                        throw e
+                timeout(time: 2, unit: 'MINUTES') {
+          		    script {
+                        try {
+                            sh "bash integration-test.sh $serviceName $applicationURL $applicationURI"
+                        } catch (e) {
+                            sh "kubectl -n dev rollout undo deploy $deploymentName"
+                            throw e
+                        }
                     }
-                }
+        	    }
             }
         }//kubectl
 
