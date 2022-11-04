@@ -75,9 +75,9 @@ podTemplate(
 
     def deploymentName  = "devsecops"
     def containerName   = "devsecops-container"
-    def serviceName     = "node-service" //"devsecops-svc"
+    def serviceName     = "devsecops-svc" //"node-service"
     def imageName       = "yulian6766/numeric-app:$IMAGETAG"
-    def applicationURL  = "http://node-service.dev.svc.cluster.local"
+    def applicationURL  = "http://192.168.99.32"
     def applicationURI  = "/increment/99"
     def dockerImageName = ""
 	    
