@@ -122,8 +122,8 @@ podTemplate(
         	    }
             }//SAST
           
-	        stage('Archive artifact') {
-		        archive 'target/*.jar' //so that they can be downloaded later
+	        //stage('Archive artifact') {
+		    //    archive 'target/*.jar' //so that they can be downloaded later
 	        }//archive artifact
 
         }//maven
