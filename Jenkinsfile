@@ -51,7 +51,7 @@ podTemplate(
 
         containerTemplate(
             name: 'owasp-zap',
-            image: 'owasp/zap2docker-stable:latest',
+            image: 'owasp/zap2docker-weekly:latest',
             command: 'cat', 
             ttyEnabled: true,
         ),
@@ -231,6 +231,12 @@ podTemplate(
         	    }
             }
         }//kubectl
+
+        container('owasp-zap') {
+            stage('OWASP ZAP - DAST') {
+                sh "bash zap.sh $serviceName $applicationURL"
+            }
+        }//owasp-zap
 
     }//node
 
