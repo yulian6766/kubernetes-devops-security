@@ -113,7 +113,7 @@ podTemplate(
             
 	        stage('SonarQube - SAST') {
 		        withSonarQubeEnv('SonarQube') {
-                	sh "mvn sonar:sonar -Dsonar.host.url=http://192.168.99.30:9000 -DskipTests=true -Dsonar.projectKey=$SERVICENAME -Dsonar.projectName=$SERVICENAME"
+                	sh "mvn sonar:sonar -Dsonar.host.url=http://sonar-service.sonar.svc.cluster.local:9000/ -DskipTests=true -Dsonar.projectKey=$SERVICENAME -Dsonar.projectName=$SERVICENAME"
 		        }
 	            timeout(time: 2, unit: 'MINUTES') {
           		    script {
