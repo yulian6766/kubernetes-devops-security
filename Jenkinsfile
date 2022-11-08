@@ -55,7 +55,7 @@ podTemplate(
             command: 'cat', 
             ttyEnabled: true,
             volumes: [
-                zapVolume(
+                emptyDirVolume(
                     mountPath: '/zap/wrk'
                 )
             ]
