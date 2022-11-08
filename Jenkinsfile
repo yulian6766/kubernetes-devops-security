@@ -54,6 +54,11 @@ podTemplate(
             image: 'owasp/zap2docker-weekly:latest',
             command: 'cat', 
             ttyEnabled: true,
+            volumes: [
+                zapVolume(
+                    mountPath: '/zap/wrk'
+                )
+            ]
         ),
 	
     ],
