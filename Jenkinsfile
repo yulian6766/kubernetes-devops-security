@@ -58,13 +58,13 @@ podTemplate(
 	
     ],
    volumes: [
-        // hostPathVolume(
-        //     hostPath : '$(pwd)', 
-        //     mountPath: '/zap/wrk/'
-        // ),
         emptyDirVolume(
-           memory: false, 
-           mountPath: '/var/lib/docker'
+            memory : true, 
+            mountPath: '/zap/wrk/'
+        ),
+        emptyDirVolume(
+            memory: false, 
+            mountPath: '/var/lib/docker'
         )
     ]
 ) {
