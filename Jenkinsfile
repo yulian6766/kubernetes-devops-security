@@ -61,7 +61,7 @@ podTemplate(
        emptyDirVolume(
            memory: false, 
            mountPath: '/var/lib/docker'
-        )
+        ),
         hostPathVolume(
             hostPath : '$(pwd)', 
             mountPath: '/zap/wrk/'
