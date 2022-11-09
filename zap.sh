@@ -3,7 +3,7 @@
 # first run this
 chmod 777 $(pwd)
 echo $(id -u):$(id -g)
-zap-api-scan.py -t $1:$2/v3/api-docs -f openapi -r zap_report.html
+zap-api-scan.py -t $1$2:$3/v3/api-docs -f openapi -r zap_report.html
 
 exit_code=$?
 

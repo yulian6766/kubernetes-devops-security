@@ -240,7 +240,7 @@ podTemplate(
 
         container('owasp-zap') {
             stage('OWASP ZAP - DAST') {
-                sh "bash zap.sh $serviceName $PORT"
+                sh "bash zap.sh $applicationURL $serviceName $PORT"
             }
         }//owasp-zap
 
