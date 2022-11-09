@@ -84,6 +84,7 @@ podTemplate(
     def applicationURL  = "http://192.168.99.32"
     def applicationURI  = "/increment/99"
     def dockerImageName = ""
+    def PORT            = ""
 	    
         stage('Checkout code') {
             checkout scm
@@ -207,7 +208,7 @@ podTemplate(
                 stage('Kubernetes - Prepare namespace') {
                     sh "kubectl get ns $NAMESPACE || kubectl create ns $NAMESPACE"
                     sh "kubectl get pods --namespace $NAMESPACE"
-                    sh "PORT=$(kubectl -n default get svc $serviceName -o json | jq .spec.ports[].nodePort)"
+                    env.PORT = sh "kubectl -n default get svc $serviceName -o json | jq .spec.ports[].nodePort)"
 		        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
 			        sh "kubectl -n $NAMESPACE create deploy node-app --image siddharth67/node-service:v1"
 			        sh "kubectl -n $NAMESPACE expose deploy node-app --name node-service --port 5000"
@@ -239,7 +240,7 @@ podTemplate(
 
         container('owasp-zap') {
             stage('OWASP ZAP - DAST') {
-                sh "bash zap.sh $serviceName $applicationURL"
+                sh "bash zap.sh $serviceName $PORT"
             }
         }//owasp-zap
 
