@@ -59,7 +59,7 @@ podTemplate(
     ],
    volumes: [
         emptyDirVolume(
-            memory : true, 
+            memory : false, 
             mountPath: '/zap/wrk/'
         ),
         emptyDirVolume(
