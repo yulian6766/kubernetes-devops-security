@@ -79,7 +79,7 @@ podTemplate(
 
     def deploymentName  = "devsecops"
     def containerName   = "devsecops-container"
-    def serviceName     = "devsecops-svc" //"node-service"
+    def serviceAppName  = "devsecops-svc" //"node-service"
     def imageName       = "yulian6766/numeric-app:$IMAGETAG"
     def applicationURL  = "http://192.168.99.32"
     def applicationURI  = "/increment/99"
@@ -228,7 +228,7 @@ podTemplate(
                 timeout(time: 2, unit: 'MINUTES') {
           		    script {
                         try {
-                            sh "bash integration-test.sh $serviceName $applicationURL $applicationURI"
+                            sh "bash integration-test.sh $serviceAppName $applicationURL $applicationURI"
                         } catch (e) {
                             sh "kubectl -n dev rollout undo deploy $deploymentName"
                             throw e
@@ -240,7 +240,7 @@ podTemplate(
 
         container('owasp-zap') {
             stage('OWASP ZAP - DAST') {
-                sh "bash zap.sh $applicationURL $serviceName $PORT"
+                sh "bash zap.sh $applicationURL $serviceAppName $PORT"
             }
         }//owasp-zap
 
