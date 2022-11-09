@@ -54,12 +54,6 @@ podTemplate(
             image: 'owasp/zap2docker-weekly:latest',
             command: 'cat', 
             ttyEnabled: true,
-            volumes: [
-                hostPathVolume(
-                    hostPath : '$(pwd)', 
-                    mountPath: '/zap/wrk/'
-                )
-            ]
         ),
 	
     ],
@@ -67,6 +61,10 @@ podTemplate(
        emptyDirVolume(
            memory: false, 
            mountPath: '/var/lib/docker'
+        )
+        hostPathVolume(
+            hostPath : '$(pwd)', 
+            mountPath: '/zap/wrk/'
         )
     ]
 ) {
@@ -209,6 +207,7 @@ podTemplate(
                 stage('Kubernetes - Prepare namespace') {
                     sh "kubectl get ns $NAMESPACE || kubectl create ns $NAMESPACE"
                     sh "kubectl get pods --namespace $NAMESPACE"
+                    sh "PORT=$(kubectl -n default get svc $serviceName -o json | jq .spec.ports[].nodePort)"
 		        catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE') {
 			        sh "kubectl -n $NAMESPACE create deploy node-app --image siddharth67/node-service:v1"
 			        sh "kubectl -n $NAMESPACE expose deploy node-app --name node-service --port 5000"
