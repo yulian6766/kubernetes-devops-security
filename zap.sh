@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # first run this
-chmod 777 $(pwd)
+# chmod 777 $(pwd)
 echo $(id -u):$(id -g)
 zap-api-scan.py -t $1:$3/v3/api-docs -f openapi -r zap_report.html
 
@@ -12,6 +12,7 @@ exit_code=$?
 
 # HTML Report
 ls -ltr
+cat zap.out
 mkdir -p owasp-zap-report
 mv zap_report.html owasp-zap-report
 
