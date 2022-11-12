@@ -13,7 +13,7 @@ exit_code=$?
 
 # HTML Report
 ls -ltr
-cat zap.out
+# cat zap.out
 
 
 echo "Exit Code : $exit_code"
