@@ -4,7 +4,7 @@
 # chmod 777 $(pwd)
 echo $(id -u):$(id -g)
 mkdir -p owasp-zap-report
-zap-api-scan.py -t $1:$3/v3/api-docs -f openapi -r owasp-zap-report/zap_report.html
+zap-api-scan.py -t $1:$3/v3/api-docs -f openapi -r zap_report.html
 
 exit_code=$?
 
