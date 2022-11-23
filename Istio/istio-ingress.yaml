@@ -21,7 +21,7 @@ spec:
           service:
             name: kiali
             port:
-              number: 9090
+              number: 20001
   - host: grafana.myapp.com
     http:
       paths:
@@ -51,4 +51,4 @@ spec:
           service:
             name: jaeger-collector
             port:
-              number: 9411
+              number: 14268
