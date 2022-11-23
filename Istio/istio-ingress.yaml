@@ -51,4 +51,4 @@ spec:
           service:
             name: jaeger-collector
             port:
-              number: 14268
+              number: 9411
